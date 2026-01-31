@@ -59,14 +59,23 @@ class BitrixBannersApiCli:
         # Serialize banners too needed type
         if _type == BannerTypeEnum.DESKTOP:
             for banner in data:
-                banner["picture_desktop"] = banner["preview_picture"]
+                if banner.get("picture_desktop", None) is None:
+                    continue
+
+                banner["preview_picture"] = banner["picture_desktop"]
                 del banner["picture_desktop"]
-                del banner["picture_phone"]
+                if banner.get("picture_phone", None):
+                    del banner["picture_phone"]
+
         if _type == BannerTypeEnum.MOBILE:
             for banner in data:
-                banner["picture_phone"] = banner["preview_picture"]
-                del banner["picture_desktop"]
+                if banner.get("picture_phone", None) is None:
+                    continue
+
+                banner["preview_picture"] = banner["picture_phone"]
                 del banner["picture_phone"]
+                if banner.get("picture_desktop", None):
+                    del banner["picture_desktop"]
 
         return [
             BannerItem.model_validate(banner, context={"base_url": self.cli.base_url})

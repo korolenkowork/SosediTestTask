@@ -1,1 +1,1 @@
-from shared.bitrix_cli.base import BitrixApiCli
+from shared.bitrix_cli.base import BitrixApiCli as BitrixApiCli

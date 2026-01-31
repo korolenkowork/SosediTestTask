@@ -24,4 +24,4 @@ class Command(BaseCommand):
                 bitrix_elements_id=130
             )
 
-        self.stdout.write(self.style.SUCCESS(f"Collections successfully created!"))
+        self.stdout.write(self.style.SUCCESS("Collections successfully created!"))
