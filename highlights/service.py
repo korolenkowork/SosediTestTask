@@ -44,7 +44,6 @@ class HighlightsService:
             "name", "picture", "active_from", "active_to", "sort",
         ).first()
         collection.elements = self.get_active_banners(collection.bitrix_elements_id, _type)
-        print(collection)
         return collection
 
     def get_collections(self):
