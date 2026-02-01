@@ -50,9 +50,7 @@ class BitrixBannersApiCli:
         data = cache.get(cache_key)
 
         if data is None:
-            url = f"{self.cli.base_url}/local/api/banners.php?id={_id}"
-            response = requests.get(url)
-            data = response.json()
+            data = self._get_banners(_id)
             cache.set(cache_key, data, self.cli.cache_timeout)
 
         # Serialize banners too needed type
@@ -84,3 +82,8 @@ class BitrixBannersApiCli:
             except pydantic.ValidationError:
                 continue
         return banners
+
+    def _get_banners(self, _id):
+        url = f"{self.cli.base_url}/local/api/banners.php?id={_id}"
+        response = requests.get(url)
+        return response.json()
