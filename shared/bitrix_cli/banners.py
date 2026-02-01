@@ -6,11 +6,10 @@ import requests
 from django.core.cache import cache
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic import field_validator, ValidationInfo
+import pydantic
 
 class BannerItem(PydanticBaseModel):
-    # picture_desktop: Optional[str] = None
-    # picture_phone: Optional[str] = None
-    preview_picture: Optional[str] = None
+    preview_picture: str
     id: str
     name: str
     banner_area: str
@@ -19,7 +18,7 @@ class BannerItem(PydanticBaseModel):
     button_link: Optional[str] = None
     active_from: Optional[datetime] = None
     active_to: Optional[datetime] = None
-    sort: Optional[str] = None
+    sort: str
 
     @field_validator("preview_picture", mode="after")
     @classmethod
@@ -77,7 +76,11 @@ class BitrixBannersApiCli:
                 if banner.get("picture_desktop", None):
                     del banner["picture_desktop"]
 
-        return [
-            BannerItem.model_validate(banner, context={"base_url": self.cli.base_url})
-            for banner in data
-        ]
+        banners = []
+        for banner in data:
+            try:
+                _banner = BannerItem.model_validate(banner, context={"base_url": self.cli.base_url})
+                banners.append(_banner)
+            except pydantic.ValidationError:
+                continue
+        return banners

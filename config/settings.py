@@ -163,7 +163,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # BITRIX
 
 BITRIX_URL = os.environ.get('BITRIX_URL', 'https://sosedi.medialine.dev')
-BITRIX_CACHE_TIMEOUT = os.environ.get('BITRIX_CACHE_TIMEOUT', 60) * 60 # minutes
+BITRIX_CACHE_TIMEOUT = int(os.environ.get('BITRIX_CACHE_TIMEOUT', 60)) * 60 # minutes
 
 
 # Internationalization

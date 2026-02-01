@@ -1,6 +1,8 @@
 from rest_framework import serializers
 
 from highlights import models
+from highlights.service import HighlightsService
+from shared.bitrix_cli.banners import BannerTypeEnum
 
 
 class CollectionSerializer(serializers.ModelSerializer):
@@ -19,9 +21,30 @@ class BannerSerializer(serializers.Serializer):
     active_to = serializers.DateTimeField()
     sort = serializers.CharField(max_length=255)
 
-class HighlightsSerializer(serializers.ModelSerializer):
+class HighlightSerializer(serializers.ModelSerializer):
+    """
+    Used for single highlight serialization
+    """
     class Meta:
         model = models.Collection
         fields = 'name', 'picture', 'active_from', 'active_to', 'sort', 'elements'
 
     elements = BannerSerializer(many=True)
+
+
+class MobileMultipleHighlightsSerializer(serializers.ModelSerializer):
+    """
+    Used for multiple highlights serialization
+    """
+    class Meta:
+        model = models.Collection
+        fields = 'name', 'picture', 'active_from', 'active_to', 'sort', 'elements'
+
+    elements = serializers.SerializerMethodField()
+
+    def get_elements(self, obj):
+        banners = HighlightsService().get_banners(
+            obj.id,
+            _type=BannerTypeEnum.MOBILE
+        )
+        return BannerSerializer(banners, many=True).data

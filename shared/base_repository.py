@@ -1,3 +1,6 @@
+from typing import Optional
+
+
 class BaseRepository:
     model = None
     base_filters = {"is_deleted": False}
@@ -7,12 +10,6 @@ class BaseRepository:
 
     def filter(self, **filters):
         return self.model.objects.filter(**self.base_filters, **filters)
-
-    def filter_first(self, **filters):
-        return self.model.objects.filter(**filters).first()
-
-    def get_by_id(self, pk):
-        return self.model.objects.filter(pk=pk, **self.base_filters).first()
 
     def create(self, **kwargs):
         return self.model.objects.create(**kwargs)
